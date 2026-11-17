@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLAN_FEATURES, PRICES } from "@/lib/plans";
-import { usePlan } from "@/lib/auth";
+import { useAuth, usePlan } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { SubscribeDialog } from "./SubscribeDialog";
 
@@ -13,6 +13,7 @@ export function PricingPlans() {
   const [billing, setBilling] = useState<Billing>("yearly");
   const [open, setOpen] = useState(false);
   const { isPremium } = usePlan();
+  const { user } = useAuth();
   const price = billing === "monthly" ? PRICES.monthly : Math.round((PRICES.yearly / 12) * 100) / 100;
 
   return (
@@ -50,7 +51,7 @@ export function PricingPlans() {
             ))}
           </ul>
           <Button asChild variant="glass" size="lg" className="mt-8">
-            <Link to="/register">{isPremium ? "Included" : "Start for free"}</Link>
+            {user ? <Link to="/dashboard">Open dashboard</Link> : <Link to="/register">Start for free</Link>}
           </Button>
         </div>
 

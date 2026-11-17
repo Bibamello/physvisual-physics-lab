@@ -205,7 +205,7 @@ function Lab({ sim }: { sim: SimDefinition }) {
     >
       <div className="mx-auto grid max-w-[1600px] gap-5 lg:grid-cols-[300px_minmax(0,1fr)] 2xl:grid-cols-[300px_minmax(0,1fr)_340px]">
         {/* Parameters */}
-        <aside className="glass h-fit rounded-2xl p-5 lg:sticky lg:top-24">
+        <aside className="glass h-fit rounded-2xl p-5 2xl:sticky 2xl:top-24">
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
               <SlidersHorizontal className="size-4 text-primary" /> Parameters
@@ -269,11 +269,11 @@ function Lab({ sim }: { sim: SimDefinition }) {
           <div className="glass overflow-hidden rounded-2xl">
             <div className="relative h-[340px] bg-lab-grid sm:h-[440px] xl:h-[500px]">
               <SimCanvas sim={sim} params={params} sample={sample} series={series} />
-              <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-2">
+              <div className="pointer-events-none absolute left-2 right-2 top-2 flex flex-wrap gap-1.5 sm:left-3 sm:top-3 sm:gap-2">
                 {sim.readouts.map((r) => (
-                  <div key={r.key} className="rounded-lg border border-glass-border bg-background/70 px-2.5 py-1.5 backdrop-blur">
+                  <div key={r.key} className="rounded-lg border border-glass-border bg-background/70 px-2 py-1 backdrop-blur sm:px-2.5 sm:py-1.5">
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{r.label}</div>
-                    <div className="font-mono text-sm tabular text-primary">
+                    <div className="font-mono text-xs tabular text-primary sm:text-sm">
                       {fmt(sample[r.key])} <span className="text-xs text-muted-foreground">{r.unit}</span>
                     </div>
                   </div>

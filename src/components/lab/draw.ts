@@ -175,7 +175,7 @@ function drawKinematics(c: Ctx, p: Params, s: Sample, series: Sample[]) {
   for (let i = 1; i <= Math.floor(s.t); i++) {
     const xi = p.v0 * i + 0.5 * p.a * i * i;
     box(c, toPx(xi), gy - 34, carW, 22, 0.12);
-    label(c, `${i}s`, toPx(xi) + carW / 2, gy - 42, c.theme.muted);
+    label(c, `${i}s`, toPx(xi) + carW / 2, gy - 52, c.theme.muted);
   }
 
   const cx = toPx(s.x);

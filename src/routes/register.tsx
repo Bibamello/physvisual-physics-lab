@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Loader2, MailCheck } from "lucide-react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Divider, SocialButtons, safeNext } from "@/components/auth/SocialButtons";
@@ -45,6 +46,12 @@ function strength(pw: string) {
 function RegisterPage() {
   const search = Route.useSearch();
   const next = safeNext(search.redirect);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  // Already signed in: skip the form.
+  useEffect(() => {
+    if (user) navigate({ to: next, replace: true });
+  }, [user, next, navigate]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

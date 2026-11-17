@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -29,7 +30,12 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const search = Route.useSearch();
   const next = safeNext(search.redirect);
+  const { user } = useAuth();
   const navigate = useNavigate();
+  // Already signed in: skip the form.
+  useEffect(() => {
+    if (user) navigate({ to: next, replace: true });
+  }, [user, next, navigate]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
