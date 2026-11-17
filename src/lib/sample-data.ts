@@ -4,7 +4,7 @@ export interface Experiment {
   id: string;
   simId: SimId;
   name: string;
-  params: Params;
+  params: Partial<Params>;
   createdAt: string; // ISO date
   result: string;
 }

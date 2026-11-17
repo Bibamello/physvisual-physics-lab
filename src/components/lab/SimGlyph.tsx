@@ -53,10 +53,11 @@ export function SimGlyph({ id, className }: { id: SimId; className?: string }) {
       {id === "dynamics" && (
         <>
           <path d="M20 80 L140 80 L140 24 Z" fill="var(--secondary)" />
-          <g transform="rotate(-25 80 52)">
-            <rect x="62" y="34" width="26" height="18" rx="3" fill={`url(#g-${id})`}>
-              <animate attributeName="x" values="100;40;40" keyTimes="0;0.8;1" dur="3s" repeatCount="indefinite" />
-            </rect>
+          <g>
+            <animateMotion dur="3s" repeatCount="indefinite" path="M118 34.3 L46 67.9" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="spline" keySplines="0.5 0 1 1;0 0 1 1" />
+            <g transform="rotate(-25)">
+              <rect x="-13" y="-18" width="26" height="18" rx="3" fill={`url(#g-${id})`} />
+            </g>
           </g>
           <path d="M30 80 A 14 14 0 0 1 32 72" fill="none" stroke="var(--primary)" />
           <text x="36" y="76" fontSize="9" fill="var(--muted-foreground)" fontFamily="var(--font-mono)">θ</text>

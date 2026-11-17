@@ -211,7 +211,7 @@ function drawKinematics(c: Ctx, p: Params, s: Sample, series: Sample[]) {
 function drawIncline(c: Ctx, p: Params, s: Sample) {
   const th = (p.theta * Math.PI) / 180;
   const margin = 50;
-  const Lpx = Math.min((c.w - margin * 2 - 40) / Math.cos(th), (c.h - 110) / Math.sin(th));
+  const Lpx = Math.min((c.w - margin * 2 - 40) / Math.cos(th), (c.h - 140) / Math.sin(th));
   const B = { x: c.w - margin, y: c.h - 50 };
   const A = { x: B.x - Lpx * Math.cos(th), y: B.y - Lpx * Math.sin(th) };
   const { ctx, theme } = c;
@@ -269,7 +269,7 @@ function drawIncline(c: Ctx, p: Params, s: Sample) {
   arrow(c, center.x, center.y, center.x + d.x * s.weightParallel * k, center.y + d.y * s.weightParallel * k, theme.amber, "F∥", 1.8);
 
   const a = inclineAcceleration(p);
-  if (a === 0) label(c, "Static friction holds the block: μ ≥ tan θ", c.w / 2, 30, theme.amber, "center", 12);
+  if (a === 0) label(c, "Static friction holds the block: μ ≥ tan θ", c.w / 2, c.h - 16, theme.amber, "center", 12);
 }
 
 function drawNewton(c: Ctx, p: Params, s: Sample, series: Sample[]) {
@@ -289,14 +289,20 @@ function drawNewton(c: Ctx, p: Params, s: Sample, series: Sample[]) {
   label(c, `${p.m} kg`, x + size / 2, gy - size / 2 + 4, c.theme.surface, "center", 12);
 
   const k = 110 / Math.max(50, p.force, p.mu * p.m * G_EARTH);
-  arrow(c, x - 12 - p.force * k, gy - size / 2, x - 4, gy - size / 2, c.theme.amber, `F ${p.force.toFixed(0)} N`);
-  if (s.friction > 0.01) arrow(c, x + size / 2, gy + 6, x + size / 2 - s.friction * k, gy + 6, c.theme.violet, `f ${s.friction.toFixed(1)} N`);
+  const fx0 = x - 12 - p.force * k;
+  arrow(c, fx0, gy - size / 2, x - 4, gy - size / 2, c.theme.amber);
+  if (p.force > 0) label(c, `F ${p.force.toFixed(0)} N`, fx0, gy - size / 2 - 12, c.theme.amber, "left", 12);
+  if (s.friction > 0.01) {
+    const fx1 = x + size / 2 - s.friction * k;
+    arrow(c, x + size / 2, gy + 6, fx1, gy + 6, c.theme.violet);
+    label(c, `f ${s.friction.toFixed(1)} N`, fx1 - 8, gy + 10, c.theme.violet, "right", 12);
+  }
   arrow(c, x + size / 2, gy - size - 8, x + size / 2, gy - size - 8 - 46, c.theme.primary, "N");
   label(
     c,
     s.a > 0 ? `ΣF = ${s.net.toFixed(1)} N → a = ${s.a.toFixed(2)} m/s²` : "ΣF = 0 → the crate stays at rest (first law)",
     c.w / 2,
-    34,
+    c.h - 18,
     s.a > 0 ? c.theme.fg : c.theme.amber,
     "center",
     13,
@@ -308,7 +314,7 @@ function drawProjectile(c: Ctx, p: Params, s: Sample, series: Sample[]) {
   const H = Math.max(projectileMaxHeight(p), 1);
   const ox = 60;
   const oy = c.h - 46;
-  const scale = Math.min((c.w - ox - 40) / R, (oy - 40) / H);
+  const scale = Math.min((c.w - ox - 40) / R, (oy - 96) / H);
   const X = (x: number) => ox + x * scale;
   const Y = (y: number) => oy - y * scale;
   const { ctx, theme } = c;
@@ -379,7 +385,7 @@ function drawProjectile(c: Ctx, p: Params, s: Sample, series: Sample[]) {
 }
 
 function drawFreeFall(c: Ctx, p: Params, s: Sample) {
-  const top = 40;
+  const top = 96;
   const gy = c.h - 40;
   const scale = (gy - top) / p.h;
   const { ctx, theme } = c;
@@ -430,9 +436,9 @@ function drawFreeFall(c: Ctx, p: Params, s: Sample) {
   if (p.k > 0) arrow(c, bx - 54, by, bx - 54, by - 50 * ((p.k * s.v) / (p.m * p.g)), theme.amber, "drag", 2);
 
   // terminal velocity panel
-  const panelX = c.w - 220;
-  label(c, Number.isFinite(vt) ? `terminal vₜ = ${vt.toFixed(1)} m/s` : "no air resistance", panelX, top + 4, theme.muted, "left", 12);
-  label(c, `g = ${p.g.toFixed(2)} m/s²`, panelX, top + 24, theme.muted, "left", 12);
+  const panelX = c.w - 230;
+  label(c, Number.isFinite(vt) ? `terminal vₜ = ${vt.toFixed(1)} m/s` : "no air resistance", panelX, gy - 40, theme.muted, "left", 12);
+  label(c, `g = ${p.g.toFixed(2)} m/s²`, panelX, gy - 20, theme.muted, "left", 12);
 }
 
 export function drawScene(

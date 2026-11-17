@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
+import { useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { updateLocal, useLocalState } from "./local-store";
@@ -22,18 +23,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (!session) setProfile(null);
+      if (event === "SIGNED_IN") {
+        // Return to where the user was headed after a full-page social sign-in.
+        const next = sessionStorage.getItem("pv:next");
+        if (next) {
+          sessionStorage.removeItem("pv:next");
+          setTimeout(() => router.navigate({ to: next }), 0);
+        }
+      }
     });
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
       if (!data.session) setLoading(false);
     });
     return () => sub.subscription.unsubscribe();
-  }, []);
+  }, [router]);
 
   const userId = user?.id;
   useEffect(() => {
@@ -46,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const meta = user?.user_metadata ?? {};
         const { data: created } = await supabase
           .from("profiles")
-          .insert({ id: userId, display_name: meta.display_name ?? meta.full_name ?? user?.email?.split("@")[0] ?? "" })
+          .insert({ id: userId, display_name: meta["display_name"] ?? meta["full_name"] ?? user?.email?.split("@")[0] ?? "" })
           .select("*")
           .single();
         row = created;

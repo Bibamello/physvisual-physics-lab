@@ -3,11 +3,26 @@
 
 export type SimId = "kinematics" | "dynamics" | "newtons-laws" | "projectile" | "free-fall";
 
-export type Params = Record<string, number>;
-export type Sample = Record<string, number>;
+export type ParamKey = "v0" | "a" | "T" | "theta" | "m" | "mu" | "length" | "force" | "angle" | "h0" | "g" | "h" | "k";
+export type SampleKey =
+  | "t" | "x" | "v" | "a" | "s" | "weightParallel" | "normal" | "friction" | "net"
+  | "y" | "vx" | "vy" | "speed" | "height" | "distance";
+
+/** Every model reads the keys it needs; unused keys stay 0. */
+export type Params = Record<ParamKey, number>;
+export type Sample = Record<SampleKey, number>;
+
+export const ZERO_PARAMS: Params = { v0: 0, a: 0, T: 0, theta: 0, m: 0, mu: 0, length: 0, force: 0, angle: 0, h0: 0, g: 0, h: 0, k: 0 };
+export const ZERO_SAMPLE: Sample = {
+  t: 0, x: 0, v: 0, a: 0, s: 0, weightParallel: 0, normal: 0, friction: 0, net: 0,
+  y: 0, vx: 0, vy: 0, speed: 0, height: 0, distance: 0,
+};
+
+/** Build a full parameter set from the keys a model actually uses. */
+export const withParams = (p: Partial<Params>): Params => ({ ...ZERO_PARAMS, ...p });
 
 export interface ParamDef {
-  key: string;
+  key: ParamKey;
   label: string;
   symbol: string;
   unit: string;
@@ -18,14 +33,14 @@ export interface ParamDef {
 }
 
 export interface SeriesDef {
-  key: string;
+  key: SampleKey;
   label: string;
   unit: string;
   tone: "cyan" | "violet" | "amber";
 }
 
 export interface ReadoutDef {
-  key: string;
+  key: SampleKey;
   label: string;
   unit: string;
 }
@@ -41,7 +56,7 @@ export interface Preset {
   id: string;
   name: string;
   description: string;
-  params: Params;
+  params: Partial<Params>;
 }
 
 export interface SimDefinition {
@@ -76,7 +91,7 @@ export const fmt = (n: number, digits = 2) => {
 export function kinematicsAt(t: number, p: Params) {
   const x = p.v0 * t + 0.5 * p.a * t * t;
   const v = p.v0 + p.a * t;
-  return { t, x, v, a: p.a };
+  return { ...ZERO_SAMPLE, t, x, v, a: p.a };
 }
 
 // ---------- Dynamics: block sliding down an incline with friction ----------
@@ -102,7 +117,7 @@ export function inclineAt(t: number, p: Params) {
   const weightParallel = p.m * G_EARTH * Math.sin(th);
   const normal = p.m * G_EARTH * Math.cos(th);
   const friction = a > 0 ? p.mu * normal : weightParallel; // static friction balances when at rest
-  return { t, s, v, a, weightParallel, normal, friction };
+  return { ...ZERO_SAMPLE, t, s, v, a, weightParallel, normal, friction };
 }
 
 // ---------- Newton's second law: applied force on a crate with friction ----------
@@ -115,7 +130,7 @@ export function newtonAt(t: number, p: Params) {
   const a = newtonAcceleration(p);
   const maxFriction = p.mu * p.m * G_EARTH;
   const friction = a > 0 ? maxFriction : p.force;
-  return { t, x: 0.5 * a * t * t, v: a * t, a, friction, net: p.force - friction };
+  return { ...ZERO_SAMPLE, t, x: 0.5 * a * t * t, v: a * t, a, friction, net: p.force - friction };
 }
 
 // ---------- Projectile motion ----------
@@ -140,7 +155,7 @@ export function projectileAt(t: number, p: Params) {
   const vy = p.v0 * Math.sin(p.angle * DEG) - p.g * tc;
   const x = vx * tc;
   const y = Math.max(0, p.h0 + p.v0 * Math.sin(p.angle * DEG) * tc - 0.5 * p.g * tc * tc);
-  return { t, x, y, vx, vy, speed: Math.hypot(vx, vy) };
+  return { ...ZERO_SAMPLE, t, x, y, vx, vy, speed: Math.hypot(vx, vy) };
 }
 
 // ---------- Free fall with linear air drag (F = -k·v) ----------
@@ -179,7 +194,7 @@ export function fallAt(t: number, p: Params) {
   const tc = Math.min(t, T);
   const d = Math.min(fallDistance(tc, p), p.h);
   const v = fallVelocity(tc, p);
-  return { t, height: p.h - d, distance: d, v, a: p.g - (p.k * v) / p.m };
+  return { ...ZERO_SAMPLE, t, height: p.h - d, distance: d, v, a: p.g - (p.k * v) / p.m };
 }
 
 // ---------- Catalog ----------
@@ -395,7 +410,9 @@ export function getSimulation(id: string): SimDefinition | undefined {
 }
 
 export function defaultParams(sim: SimDefinition): Params {
-  return Object.fromEntries(sim.params.map((p) => [p.key, p.default]));
+  const out = { ...ZERO_PARAMS };
+  for (const d of sim.params) out[d.key] = d.default;
+  return out;
 }
 
 export function buildSeries(sim: SimDefinition, p: Params, points = 160) {

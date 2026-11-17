@@ -23,7 +23,7 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const FAQ = [
+const FAQ: [string, string][] = [
   ["Is the checkout real?", "Not yet. This is a demo subscription: confirming it switches your account to Premium without charging a card."],
   ["Can I cancel anytime?", "Yes. Premium stays active until the end of the billing period and then returns to Free. Your saved experiments are kept."],
   ["Do you offer school licences?", "Schools with more than 40 students get volume pricing from $4 per student per year, billed to the school."],

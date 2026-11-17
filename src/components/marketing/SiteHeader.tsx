@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 
 const NAV = [
   { to: "/simulations", label: "Simulations" },
-  { to: "/lab/$simId", params: { simId: "projectile" }, label: "Laboratory" },
+  { to: "/lab/$simId", label: "Laboratory" },
   { to: "/pricing", label: "Pricing" },
 ] as const;
 
@@ -22,7 +22,7 @@ export function SiteHeader() {
             <Link
               key={item.label}
               to={item.to}
-              params={"params" in item ? item.params : undefined}
+          params={{ simId: "projectile" }}
               className="rounded-lg px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
               activeProps={{ className: "text-foreground" }}
             >
@@ -59,8 +59,8 @@ export function SiteHeader() {
                 <Link
                   key={item.label}
                   to={item.to}
-                  params={"params" in item ? item.params : undefined}
-                  className="rounded-lg px-3 py-2.5 text-foreground hover:bg-accent"
+          params={{ simId: "projectile" }}
+                      className="rounded-lg px-3 py-2.5 text-foreground hover:bg-accent"
                 >
                   {item.label}
                 </Link>

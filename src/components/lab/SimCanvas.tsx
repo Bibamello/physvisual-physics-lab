@@ -20,6 +20,7 @@ export function SimCanvas({ sim, params, sample, series }: Props) {
     if (!el) return;
     themeRef.current = readTheme(el);
     const ro = new ResizeObserver(([entry]) => {
+      if (!entry) return;
       const { width, height } = entry.contentRect;
       setSize({ w: Math.round(width), h: Math.round(height) });
     });

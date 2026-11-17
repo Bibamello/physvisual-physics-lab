@@ -21,7 +21,7 @@ export function ParamControl({ def, value, onChange, disabled }: Props) {
           <input
             id={`p-${def.key}`}
             type="number"
-            disabled={disabled}
+            disabled={!!disabled}
             value={Number(value.toFixed(decimals))}
             min={def.min}
             max={def.max}
@@ -40,8 +40,8 @@ export function ParamControl({ def, value, onChange, disabled }: Props) {
         min={def.min}
         max={def.max}
         step={def.step}
-        disabled={disabled}
-        onValueChange={([v]) => onChange(v)}
+        disabled={!!disabled}
+        onValueChange={([v]) => v !== undefined && onChange(v)}
         aria-label={def.label}
         className="[&_[role=slider]]:size-4 [&_[role=slider]]:border-primary [&_[role=slider]]:bg-primary [&_[role=slider]]:shadow-glow"
       />

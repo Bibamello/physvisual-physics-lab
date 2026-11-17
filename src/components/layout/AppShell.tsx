@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/simulations", label: "Simulations", icon: LayoutGrid },
-  { to: "/lab/$simId", params: { simId: "projectile" }, label: "Laboratory", icon: FlaskConical },
+  { to: "/lab/$simId", label: "Laboratory", icon: FlaskConical },
   { to: "/pricing", label: "Pricing", icon: CreditCard },
 ] as const;
 
@@ -31,7 +31,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         <Link
           key={item.label}
           to={item.to}
-          params={"params" in item ? item.params : undefined}
+          params={{ simId: "projectile" }}
           onClick={onNavigate}
           activeOptions={{ exact: false, includeSearch: false }}
           className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-sidebar-foreground/75 transition-all hover:bg-sidebar-accent hover:text-sidebar-foreground"

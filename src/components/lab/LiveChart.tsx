@@ -23,7 +23,7 @@ export function LiveChart({ def, data, t, current }: Props) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) => setW(Math.max(240, Math.round(e.contentRect.width))));
+    const ro = new ResizeObserver(([e]) => e && setW(Math.max(240, Math.round(e.contentRect.width))));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -47,7 +47,7 @@ export function LiveChart({ def, data, t, current }: Props) {
   const area = done.length > 1 ? `${path(done)}L${X(Math.min(t, T))},${Y(Math.max(lo, 0))}L${X(0)},${Y(Math.max(lo, 0))}Z` : "";
 
   return (
-    <div className="glass rounded-2xl p-4">
+    <div className="glass min-w-0 rounded-2xl p-4">
       <div className="flex items-baseline justify-between">
         <div className="flex items-center gap-2 text-sm font-medium">
           <span className="size-2 rounded-full" style={{ background: color }} />
@@ -58,7 +58,7 @@ export function LiveChart({ def, data, t, current }: Props) {
           {current.toFixed(2)} <span className="text-muted-foreground">{def.unit}</span>
         </div>
       </div>
-      <div ref={ref} className="mt-2">
+      <div ref={ref} className="mt-2 w-full overflow-hidden">
         <svg width={w} height={H} className="block overflow-visible">
           <defs>
             <linearGradient id={gid} x1="0" x2="0" y1="0" y2="1">

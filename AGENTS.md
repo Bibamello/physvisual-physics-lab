@@ -28,3 +28,11 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## PhysVisual architecture
+- Physics models live in `src/lib/simulations.ts` as pure functions of (t, params); canvas, graphs and formula panel all read from them, so physics is unit-testable without a browser.
+- Simulation params/samples use fixed key unions (`ParamKey`, `SampleKey`) filled from `ZERO_PARAMS`/`ZERO_SAMPLE`, because tsconfig enables `noPropertyAccessFromIndexSignature` and `noUncheckedIndexedAccess`.
+- Accounts use Lovable Cloud auth; per-user profile (name, learner type, school, plan, favorites) is the `profiles` table, created by a signup trigger. Saved experiments and guest favorites stay in browser storage (`src/lib/local-store.ts`).
+- `/dashboard` is gated by the client-only `src/routes/_authenticated/route.tsx`; the catalog and lab stay public so visitors can try simulations before signing up.
+- The Premium checkout is a demo that only flips `profiles.plan`; no payment provider is connected.
+- The app is dark-only: theme tokens live on `:root` in `src/styles.css`, and canvas drawings read them at runtime via `getComputedStyle`.

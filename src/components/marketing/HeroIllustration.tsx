@@ -54,7 +54,7 @@ export function HeroIllustration() {
               <animateMotion dur="3.2s" repeatCount="indefinite" path="M40 270 Q 210 -20 380 270" />
             </circle>
             <path d="M210 125 V270" stroke="var(--violet)" strokeOpacity="0.45" strokeDasharray="3 5" />
-            <text x="216" y="120" fontSize="10" fill="var(--violet)" fontFamily="var(--font-mono)">Hₘₐₓ = 19.8 m</text>
+            <text x="216" y="120" fontSize="10" fill="var(--violet)" fontFamily="var(--font-mono)">H max = 19.8 m</text>
 
             <g transform="translate(450 40)">
               <path d="M-26 0 H26" stroke="var(--muted-foreground)" strokeWidth="2" />
@@ -90,7 +90,7 @@ export function HeroIllustration() {
           ))}
         </div>
       </div>
-      <div className="glass absolute -bottom-6 -left-6 hidden animate-float rounded-2xl px-4 py-3 lg:block">
+      <div className="glass absolute -bottom-16 -left-6 hidden animate-float rounded-2xl px-4 py-3 lg:block">
         <div className="font-mono text-[11px] text-muted-foreground">Newton's 2nd law</div>
         <div className="font-display text-lg text-gradient">ΣF = m·a</div>
       </div>

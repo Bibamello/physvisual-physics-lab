@@ -1,6 +1,6 @@
 # PhysVisual roadmap
 - [x] Design system (dark navy lab theme)
-- [ ] Simulation engine (5 sims) + tests
-- [ ] Landing, Pricing, Catalog, Dashboard, Lab pages
-- [ ] Real accounts: Lovable Cloud email sign-up/login + profiles
-- [ ] Head metadata on every page
+- [x] Simulation engine (5 sims) + tests
+- [x] Landing, Pricing, Catalog, Dashboard, Lab pages
+- [x] Real accounts: email sign-up/login, Google, Lovable + profiles
+- [x] Head metadata on every page
